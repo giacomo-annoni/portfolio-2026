@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giacomo Annoni — Creative Technologist</title>
+<meta name="description" content="Giacomo Annoni, Creative Technologist in Milan. Design, AI and creative ops: brand systems, workflows and tools for creative teams.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Giacomo Annoni — Creative Technologist">
+<meta property="og:description" content="Design, AI and creative ops: brand systems, workflows and tools for creative teams.">
+<meta property="og:image" content="img/giacomo.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ff5b2e'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a repository of work. Drifting pop-up windows on the board, filter chips pinned to the bottom. One off-white page, one typeface (Space Grotesk, black); orange is the only accent. */
+:root{
+  --bg:#F5F5F3;
+  --fg:#000;
+  --sub:rgba(0,0,0,.72);
+  --rule:rgba(0,0,0,.28);
+  --accent:#ff5b2e;
+  --display:'Space Grotesk',system-ui,sans-serif;
+  --mono:var(--display);
+  --r:0;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:400 16px/1.55 var(--display);min-height:100dvh;display:flex;flex-direction:column}
+main{flex:1}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid #000;outline-offset:3px}
+
+/* one voice: regular text, bold for emphasis, a heavy underline for the key phrase */
+b{font-weight:700}
+u{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:4px}
+
+header{position:sticky;top:0;z-index:50;background:#fff;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:18px 16px}
+.nav{font:700 15px/1.2 var(--display)}
+.nav.r{justify-self:end}
+.menu{display:flex;flex-direction:row;align-items:center;gap:14px}
+.menu .nav[aria-current]{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+.nav:hover{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+@media(max-width:600px){header{gap:8px}.menu{gap:10px}.nav{font-size:14px}.mark{font-size:15px!important}}
+#v-index{padding-top:24px}
+.mark{font:700 clamp(17px,4.6vw,24px)/1.1 var(--display);letter-spacing:-.01em;white-space:nowrap}
+
+/* board: pop-up windows drifting across the stage */
+.collage{position:relative;overflow:hidden;width:100%;background-image:radial-gradient(rgba(0,0,0,.16) 1px,transparent 1.4px);background-size:24px 24px;background-position:12px 12px}
+.glow{position:absolute;left:0;top:0;z-index:0;border-radius:50%;pointer-events:none;will-change:transform;transform:translate3d(-999px,-999px,0)}
+.g1{width:54vmax;height:54vmax;margin:-27vmax 0 0 -27vmax;background:radial-gradient(circle,rgba(255,91,46,.22),rgba(255,91,46,0) 62%)}
+.g2{width:80vmax;height:80vmax;margin:-40vmax 0 0 -40vmax;background:radial-gradient(circle,rgba(255,91,46,.13),rgba(255,91,46,0) 62%)}
+.card.sm .cta{display:none}
+.fill .art{background:#e4e4e0}
+.fill .ttl{color:var(--sub);font-weight:500}
+.gridmode .fill:hover .win{transform:none}
+.gridmode .card:hover .win,.gridmode .card:focus-visible .win{transform:translateY(-3px)}
+.card{position:absolute;left:0;top:0;display:block;width:var(--w,43.5vw);z-index:1;will-change:transform}
+.card.wide{width:calc(var(--w,43.5vw)*1.5)}
+.card.on{z-index:40}
+.card:hover,.card:focus-visible{z-index:60;outline:none}
+.win{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.12),0 14px 32px -16px rgba(0,0,0,.45);transition:transform .25s,opacity .25s,filter .25s;animation:enter .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:calc(var(--n,0)*90ms)}
+@keyframes enter{from{opacity:0;transform:scale(.8)}}
+.card:hover .win,.card:focus-visible .win{transform:translateY(-4px) scale(1.02)}
+.card:focus-visible .win{box-shadow:0 0 0 3px var(--fg)}
+.card.off .win{opacity:.14;filter:saturate(0);transform:scale(.97)}
+.tb{display:flex;justify-content:space-between;align-items:center;gap:12px;height:40px;padding:0 14px;border-top:1px solid rgba(0,0,0,.12);font:700 13px/1 var(--display);color:var(--fg)}
+.ttl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cta{flex:none;font-weight:400;color:var(--sub)}
+@media(hover:hover){.cta{opacity:0;transition:opacity .2s}.card:hover .cta,.card:focus-visible .cta{opacity:1}}
+.card:hover .cta,.card:focus-visible .cta{color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+.art{position:relative;aspect-ratio:var(--ar,1/1)}
+.art svg,.hero svg,.ph svg,.th svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.art img,.hero img,.th img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+/* index: file-listing view */
+.list{max-width:1000px;margin:0 auto;padding:0 16px 24px}
+.row{display:grid;grid-template-columns:52px 1fr auto;grid-template-areas:"th tt go" "th tg go";gap:2px 14px;align-items:center;padding:12px 0;border-top:1px solid var(--fg)}
+.row:last-child{border-bottom:1px solid var(--fg)}
+.th{grid-area:th;position:relative;width:52px;height:52px;overflow:hidden}
+.tt{grid-area:tt;font:700 clamp(18px,3vw,24px)/1.25 var(--display);letter-spacing:-.01em}
+.tg{grid-area:tg;font:500 13px/1.45 var(--display);color:var(--sub)}
+.go{grid-area:go;font:700 20px/1 var(--display);transition:transform .2s}
+.row:hover .go{transform:translateX(5px)}
+.row:hover .tt{text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+
+/* profile */
+.profile{max-width:900px;margin:0 auto;padding:24px 16px 56px}
+.pic{margin:0 0 28px}
+.pf{aspect-ratio:4/5;max-width:320px;overflow:hidden;display:grid;place-items:center;font:500 14px/1 var(--display);color:var(--sub)}
+.pf img{width:100%;height:100%;object-fit:cover}
+.profile h1{font:700 clamp(34px,7vw,56px)/1.05 var(--display);letter-spacing:-.02em;margin:0 0 24px}
+.profile h1 span{display:inline-block;text-decoration:underline;text-decoration-thickness:.08em;text-underline-offset:.1em}
+.profile p{font:400 clamp(17px,2.2vw,20px)/1.55 var(--display);margin:0 0 20px;max-width:36em}
+.profile p b{font-weight:700}
+.sbam{font:700 clamp(40px,9vw,72px)/1 var(--display);letter-spacing:-.02em;margin:10px 0 28px}
+.flow{list-style:none;margin:0 0 30px;padding:0;display:flex;flex-wrap:wrap;gap:8px 0;align-items:baseline;font:400 clamp(17px,2.2vw,20px)/1.4 var(--display)}
+.flow li:not(:last-child)::after{content:"→";margin:0 .6em;font-weight:700}
+.flow li{font-weight:700}
+.lnk{font-weight:700;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:5px}
+
+/* project */
+.project{width:100%;max-width:1000px;margin:0 auto;padding:8px 16px 24px;text-align:center}
+.stage{background:#E8E8E4;margin:0 0 24px;padding:28px 16px}
+.hero{position:relative;width:min(80vw,var(--hw,380px));aspect-ratio:var(--har,4/5);margin:0 auto;overflow:hidden;box-shadow:0 18px 40px -18px rgba(0,0,0,.45)}
+.ptitle{font:700 clamp(28px,5vw,44px)/1.1 var(--display);letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance}
+.pmeta{margin:-4px 0 16px;font:500 14px/1.4 var(--display);color:var(--sub)}
+.plink{margin:-14px 0 32px}
+.facts{list-style:none;margin:0 0 40px;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:0;text-align:left;border-top:3px solid var(--fg)}
+.facts li{padding:14px 0;border-bottom:1px solid var(--rule)}
+.facts b{display:block;font:700 clamp(28px,5vw,40px)/1 var(--display);letter-spacing:-.02em;margin-bottom:6px}
+.facts span{font:500 14px/1.4 var(--display);color:var(--sub)}
+@media(min-width:760px){.facts{grid-template-columns:repeat(4,1fr);gap:0 24px}}
+.pdesc{max-width:36em;margin:0 auto 32px;font:400 clamp(16px,2vw,19px)/1.6 var(--display)}
+.pdesc b{font-weight:700}
+.flowgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:32px 20px;align-items:start;text-align:left}
+.item{grid-column:1/-1;width:var(--mw,100%);justify-self:var(--js,start);margin:0}
+.ph{position:relative;aspect-ratio:var(--ar);overflow:hidden}
+.item figcaption{margin-top:10px;font:400 14px/1.5 var(--display);color:var(--sub)}
+.item figcaption b{display:block;color:var(--fg);font-weight:700;font-size:15px;margin-bottom:2px}
+.pn{display:flex;justify-content:space-between;gap:16px;margin-top:36px;font:700 14px/1.4 var(--display);}
+.pn a{max-width:46%}
+.pn a:last-child{text-align:right}
+.pn a:hover{text-decoration:underline;text-underline-offset:4px}
+
+/* system case: before / now */
+.cmp{display:grid;gap:14px;margin:0 0 16px;text-align:left}
+.lane{border:1px solid var(--fg);padding:16px;background:#fff}
+.lane.now{border-width:3px;padding:14px}
+.lh{margin:0 0 4px;font:700 13px/1.2 var(--display);}
+.lane.now .lh{display:inline-block;background:var(--accent);padding:5px 7px}
+.lsub{margin:0 0 12px;font:500 14px/1.3 var(--display);color:var(--sub)}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{counter-increment:s;display:flex;gap:10px;align-items:baseline;padding:9px 0;border-top:1px solid var(--rule);font:500 16px/1.4 var(--display)}
+.steps li:first-child{border-top:0}
+.steps li::before{content:counter(s) ".";font:500 13px/1 var(--display);color:var(--sub);min-width:1.2em}
+.steps li .s{flex:1}
+.role{margin-left:auto;flex:none;padding:3px 7px;font:500 12px/1.2 var(--display);font-style:normal;border:1px solid var(--fg);background:#fff}
+.role.out{border-style:dashed;border-color:var(--sub);color:var(--sub);background:transparent}
+.role.sys{background:var(--accent);border-color:var(--accent);color:#000;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0;list-style:none;font:500 13px/1.2 var(--display);color:var(--sub);text-align:left}
+.legend .role{display:inline-block;width:14px;height:14px;padding:0;margin:0 6px 0 0;vertical-align:-2px}
+.key{max-width:34em;margin:0 auto 28px;padding:2px 0 2px 16px;border-left:4px solid var(--fg);text-align:left}
+.key span{display:inline-block;background:var(--accent);padding:4px 7px;font:700 12px/1 var(--display);}
+.key p{margin:10px 0 0;font:400 17px/1.5 var(--display)}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:left}
+.res div{border:1px dashed rgba(0,0,0,.6);padding:12px}
+.res b{display:block;margin-bottom:8px;font:700 28px/1 var(--display);color:var(--sub)}
+.res span{font:500 13px/1.4 var(--display);color:var(--sub)}
+.rnote{margin:8px 0 32px;font:500 13px/1.5 var(--display);color:var(--sub);text-align:left}
+.project .legend{margin:0 0 28px}
+
+/* systems chapter */
+.systems{max-width:1000px;margin:0 auto;padding:28px 16px 56px}
+.systems h1{font:700 clamp(34px,7vw,56px)/1.05 var(--display);letter-spacing:-.02em;margin:0 0 18px}
+.systems h2{font:700 20px/1.3 var(--display);margin:52px 0 16px;padding-top:14px;border-top:3px solid var(--fg)}
+.lead{font:400 clamp(17px,2.2vw,20px)/1.55 var(--display);max-width:36em;margin:0 0 30px}
+.sub2{font:700 clamp(22px,3.4vw,30px)/1.2 var(--display);letter-spacing:-.01em;margin:0 0 12px}
+.body{font:400 17px/1.6 var(--display);max-width:38em;margin:0 0 28px}
+.method{counter-reset:m;list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.method li{counter-increment:m;border-top:1px solid var(--rule);padding-top:10px}
+.method li::before{content:"0" counter(m);display:block;margin-bottom:6px;font:500 13px/1 var(--display);color:var(--sub)}
+.method b{display:block;font-size:17px;margin-bottom:2px}
+.method span{color:var(--sub)}
+.systems .more{margin:20px 0 0}
+.build{list-style:none;margin:0;padding:0}
+.build li{display:grid;grid-template-columns:120px 1fr;grid-template-areas:"m t" "m d" "m c";gap:2px 20px;align-items:center;padding:16px 0;border-top:1px solid var(--rule)}
+.build li:last-child{border-bottom:1px solid var(--rule)}
+.mini{grid-area:m;width:120px;height:40px;color:var(--fg)}
+.build b{grid-area:t;font-size:17px}
+.build p{grid-area:d;margin:0;color:var(--sub);max-width:42em}
+.chips{grid-area:c;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chips span{padding:4px 8px;border:1px solid var(--fg);font:500 12px/1.2 var(--display)}
+.principle{margin:36px 0 0;max-width:none}
+.principle p{font:700 clamp(20px,3vw,26px)/1.3 var(--display);letter-spacing:-.01em;max-width:28em}
+.systems .list{padding:0}
+.row.soft{color:var(--sub);pointer-events:none}
+.row.soft .th{border:1px dashed var(--rule)}
+.row.soft .tt{font-weight:400}
+
+/* filter bar, pinned to the bottom */
+.bar{position:sticky;bottom:0;z-index:100;display:flex;gap:8px;padding:12px 16px;overflow-x:auto;background:#fff;scrollbar-width:none}
+.bar::-webkit-scrollbar{display:none}
+.bar>:first-child{margin-left:auto}
+.bar>:last-child{margin-right:auto}
+.tag{flex:none;font:400 14px/1 var(--display);padding:10px 14px;border:1px solid var(--fg);white-space:nowrap;background:var(--bg)}
+.tag sup{font-size:11px;margin-left:4px;color:var(--sub)}
+.tag:hover{background:#000;color:var(--bg)}
+.tag:hover sup{color:var(--bg)}
+.tag[aria-pressed="true"]{background:var(--accent);border-color:#000;color:#000;font-weight:700}
+.tag[aria-pressed="true"] sup{color:#000}
+
+@media(min-width:760px){
+  header{padding:22px 24px}
+  .profile{max-width:1000px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:48px;align-items:start}
+  .pic{grid-column:2;grid-row:1;position:sticky;top:96px;margin:0}
+  .ptext{grid-column:1;grid-row:1}
+  .card{--w:clamp(189px,17.96vw,255px)}
+  .cmp{grid-template-columns:1fr 1fr}
+  .method{grid-template-columns:repeat(4,1fr);gap:24px}
+  .item{grid-column:var(--c,1/-1);width:auto;justify-self:stretch}
+  .flowgrid{gap:48px 24px}
+  .bar{padding:14px 24px;flex-wrap:wrap;justify-content:center;overflow:visible;gap:6px}
+  .bar>:first-child,.bar>:last-child{margin:0}
+  .tag{padding:9px 11px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body data-view="home">
+<header>
+  <nav class="menu"><a class="nav" id="mW" href="#home">Work</a><a class="nav" id="mS" href="#systems">Systems</a><a class="nav" id="mP" href="#profile">Profile</a></nav>
+  <a class="mark" href="#home">Giacomo Annoni</a>
+  <a class="nav r" id="navR" href="#list">List</a>
+</header>
+<main>
+  <section id="v-home"><div class="collage" id="collage"></div></section>
+  <section id="v-index" hidden><div class="list" id="list"></div></section>
+  <section id="v-systems" class="systems" hidden>
+    <h1>Systems.</h1>
+    <p class="lead">I find where creative work slows down, then build the system that removes the wait. Brand foundations AI can read, production tools built on them, and Claude skills a small team runs on its own.</p>
+
+    <h2>How I work</h2>
+    <p class="sub2">The brand goes in first. Then the AI.</p>
+    <p class="body">AI gives generic results when it works from an open prompt. It gives on-brand, production-ready results when it works inside rules someone wrote down. Most of my work is writing those rules and building the tools around them.</p>
+    <ol class="method">
+      <li><b>Find the bottleneck</b><span>Work with the team to see where things wait: an agency queue, an approval loop, a template only one person can edit.</span></li>
+      <li><b>Codify the brand</b><span>Turn design decisions into tokens, components and written rules that people and Claude both follow.</span></li>
+      <li><b>Build the tool</b><span>Claude projects and skills, CMS modules, scripts. Then hand them to the people who need them.</span></li>
+      <li><b>Fix the system</b><span>When an output is wrong, I update the rule that produced it, so the same mistake doesn't come back.</span></li>
+    </ol>
+
+    <h2>A flow I rebuilt</h2>
+    <p class="sub2">Website changes, from agency queue to in-house.</p>
+    <p class="body">Every page fix used to go through an external agency. Now it stays inside the team, and the brand rules travel with the request.</p>
+    <div id="sysflow"></div>
+
+    <h2>What I build</h2>
+    <p class="sub2">Four kinds of system.</p>
+    <ul class="build" id="build"></ul>
+    <aside class="key principle"><span>Principle</span><p>Most people ask AI for answers. I build the system that makes the answers right.</p></aside>
+
+    <h2>Case studies</h2>
+    <div class="list" id="cases"></div>
+  </section>
+  <section id="v-profile" class="profile" hidden>
+    <figure class="pic" id="pic"><div class="pf"><img src="img/giacomo.webp" alt="Portrait of Giacomo Annoni" width="640" height="800"></div></figure>
+    <div class="ptext">
+    <h1>Creative <span>Technologist.</span></h1>
+    <p>I work at the intersection of <b>design</b>, <b>process</b> and <b>AI</b>. I build the <b>tools</b>, <b>workflows</b> and <b>systems</b> that let creative teams <u>move faster</u> and produce better work.</p>
+    <p>I love <b>onomatopoeias</b> and <u>futuristic literature</u>.</p>
+    <p>I am fascinated by brilliant ideas,<br>but even more so by <b>bringing them to life</b>.</p>
+    <div class="sbam" aria-hidden="true">SBAM!</div>
+    <ol class="flow"><li>Hand drawing</li><li>Logos</li><li>Websites</li><li>Print</li><li>Events</li><li>AI</li></ol>
+    <p>Open to roles where design craft meets process and AI: <b>Creative Technologist</b>, <b>Design Technologist</b> or hybrid <u>creative-ops</u> roles.</p>
+    <p>Get in touch at <a class="lnk" href="mailto:giacomo.annoni95@gmail.com">giacomo.annoni95@gmail.com</a> or through <span class="lnk">LinkedIn</span>.</p>
+    </div>
+  </section>
+  <article id="project" class="project" hidden></article>
+</main>
+<div class="bar" id="bar"></div>
+
+<script>
+const P=[
+ {s:'in-house-web',sh:'in-house-web',t:'Website production, in-house',tags:['Workflow','AI','Brand system','Landing page'],
+  d:'Website fixes used to go through an agency: a <b>request</b>, a <b>mockup</b>, <u>long approval rounds</u>. Now <b>pages</b>, <b>new modules</b> and the <b>whole site</b> are produced in-house with Claude projects and skills, and run by people who <u>do not write code</u>.',
+  k:'flow',flow:true,ch:'systems',sum:'How the site moved from an on-call agency to an in-house flow, with Claude projects and skills producing pages and modules on brand.',
+  pal:['#111111','#f5f5f3','#5a5a58','#ff5b2e'],
+  slots:[['Brand book','report','3/2','1/9','The brand book, written so Claude can read it.'],['Claude project and skills','chat','3/4','9/13','The project and skills that generate pages.'],['Pages and modules produced','landing','16/10','3/13','Pages and modules now produced in-house.']]},
+ {s:'shippypro-experience',sh:'experience',t:'ShippyPro Experience 2026',tags:['Identity','Event','Communication','Gadget','Landing page'],
+  role:'Visual identity + Event layout',year:'2026',link:'https://experience2026.shippypro.com/',linkLabel:'experience2026.shippypro.com',
+  d:'ShippyPro Experience 2026 took place on <b>24 and 25 September</b> at the Manifattura Tabacchi in Florence, and celebrated <u>10 years of ShippyPro</u>. The event focused on <b>AI and agentic commerce</b>: how agentic logistics is changing shipping, delivery, returns and margins, with keynotes, 1-to-1 sessions and conversations with analysts and global brands. I developed the <b>whole visual identity</b> and the <b>layout of the event</b>, from layouts and renders to gadgets, communication and the landing page.',k:'event',
+  pal:['#d6d6d2','#fafaf8','#111111','#8c8c88'],
+  slots:[['Layouts','dispatch','16/9','1/-1','Event layouts, seen from the top.'],['Event pictures','event','3/2','1/8','Pictures from the two days in Florence.'],['Gadgets','social','1/1','8/13','Branded gadgets.'],['Renders','ads','4/3','1/8','Renders of the event spaces.'],['Communication','chat','4/5','8/13','Communication around the event.'],['Official landing page','landing','16/10','2/12','experience2026.shippypro.com']]},
+ {s:'logistics-trends-report-2027',sh:'trends-2027',t:'Logistics Trends Report 2027',tags:['Identity','Chatbot','Print','Communication','Landing page'],
+  role:'Visual identity + Chatbot + Landing page',year:'2026',link:'https://sp.shippypro.com/logistic-trends-report-2027-shippypro',linkLabel:'Live landing page',
+  d:'ShippyPro\'s yearly report on <b>what actually changed in European last-mile logistics</b>, tested against <u>36 million real shipments</u>. I defined the <b>visual identity</b> of this year\'s report, built a <b>chatbot</b> to interact with the report\'s knowledge, and designed the <b>landing page</b> plus the <b>communication</b> on social media and the website banners.',k:'report',
+  facts:[['36M','Shipments analysed'],['1,400+','Merchant accounts'],['6','Chapters + outlook'],['5 yrs','Exception, transit and returns records']],
+  img:'img/ltr.webp',har:'545/546',
+  pal:['#2b2b29','#9d9d99','#f3f3f0','#d0d0cc'],
+  slots:[['Identity mockups','ads','21/9','1/-1','The visual identity applied across formats.'],['Printed report','report','3/4','1/6','The physical report.'],['Chatbot','chat','9/16','7/10','Chat with the knowledge of the report.'],['Landing page','landing','16/10','2/12','The live landing page for the download.'],['Communication','social','1/1','7/13','Social media posts and website banners.']]},
+ {s:'the-dispatch',sh:'dispatch',t:'The Dispatch by ShippyPro',tags:['Identity','Communication','Landing page','Social'],
+  role:'Visual identity + Design system + Landing page',year:'2026',link:'https://sp.shippypro.com/subscribe-newsletter',linkLabel:'Subscribe landing page',
+  d:'The Dispatch is ShippyPro\'s free, <b>monthly newsletter</b> on e-commerce and logistics: a <u>five-minute read</u> for over 10,000 merchants, operators and logistics professionals, covering carrier moves, shipping automation, regulatory shifts and post-purchase strategy. I built its <b>visual identity</b>, from the logo to the <b>design system</b>, plus the <b>subscription landing page</b> and the <b>social media posts</b>.',k:'dispatch',
+  facts:[['Monthly','Free newsletter'],['5 min','Read'],['10,000+','Merchants, operators and logistics professionals'],['4','Areas: carriers, automation, regulation, post-purchase']],
+  img:'img/dispatch.webp',har:'900/320',hw:560,fit:true,
+  pal:['#ecece9','#111111','#2a2a28','#8d8d89'],
+  slots:[['Logo and identity','dispatch','16/9','1/-1','The logo and how the identity works across formats.'],['Design system','report','4/3','1/8','Type, color, grid and components behind every issue.'],['Newsletter, up close','email','1/2','8/13','A close look at one section of the email, rather than the whole issue.'],['Subscribe landing page','landing','16/10','2/12','sp.shippypro.com/subscribe-newsletter'],['Social posts','social','1/1','1/6','Social media posts that announce each issue.']]},
+ {s:'landing-pages',sh:'landing-pages',t:'ShippyPro Landing Pages',tags:['Landing page'],
+  d:'A collection of <b>campaign landing pages</b>, from <u>Black Friday 2027</u> to the <u>WhatsApp Challenge</u>.',k:'landing',
+  img:'img/blackfriday.webp',har:'424/338',
+  pal:['#c9c9c5','#111111','#fafaf8','#6b6b67'],
+  slots:[['Black Friday 2027','landing','16/10','2/12','The Black Friday 2027 campaign page.'],['WhatsApp Challenge','landing','4/3','1/8','The WhatsApp Challenge campaign page.'],['More landing pages','landing','4/5','8/13','Further campaign pages.']]},
+ {s:'meta-linkedin-ads',sh:'ads',t:'Meta and LinkedIn Ads',tags:['Ads'],
+  d:'<b>Paid social</b> campaigns for ShippyPro on <u>Meta</u> and <u>LinkedIn</u>.',k:'ads',
+  img:'img/ads.webp',har:'762/730',
+  pal:['#8f8f8b','#ececea','#1a1a18','#cfcfcb'],
+  slots:[['Meta ads','ads','1/1','1/6','Meta campaign creatives.'],['LinkedIn ads','ads','191/100','6/13','LinkedIn campaign creatives.']]},
+ {s:'costa-crociere',sh:'costa',t:'Costa Crociere',tags:['Email'],
+  role:'Art Direction + Graphic Design',year:'2023, 2024, 2025',
+  d:'As part of The Kids Road team, I worked on numerous <b>email marketing campaigns</b> for Costa Crociere. These included promotional, editorial and awareness emails for different seasons, holidays, anniversaries and target markets. <u>Basically, a boat of emails!</u>',k:'email',
+  img:'img/costa.webp',har:'396/392',
+  pal:['#e2e2de','#222222','#ffffff','#9a9a96'],
+  slots:[['Email campaigns','email','1/2','5/9','Email marketing for Costa Crociere.']]},
+ {s:'sezamo',sh:'sezamo',t:'Sezamo.it',tags:['Social'],
+  role:'Art Direction + Content Design',year:'2023',
+  d:'Sezamo.it is a brand new service for <b>online grocery delivery</b> at home that arrived in Milan in 2022. Thanks to its combination of superfresh and GDO products it aims to change how users approach grocery shopping. Through its <b>social media channels</b>, Sezamo.it shows its pillars: <u>freshness, quality and affordability</u>.',k:'social',
+  img:'img/sezamo.webp',har:'1/1',
+  pal:['#4a4a47','#f0f0ed','#ffffff','#b5b5b1'],
+  slots:[['Social graphics','social','1/1','4/10','Social media graphics for Sezamo.it.']]}
+];
+const W=P.filter(p=>p.ch!=='systems'),SY=P.filter(p=>p.ch==='systems');
+const TAGS=['Identity','Landing page','Print','Event','Ads','Email','Social','Chatbot','Gadget','Communication'];
+const count=t=>W.filter(p=>p.tags.includes(t)).length;
+
+/* visual of a project: its image when it has one, otherwise the SVG placeholder */
+const vis=p=>p.img?`<img src="${p.img}" alt="" loading="lazy" decoding="async"${p.fit?' style="object-fit:contain;background:#fff"':''}>`:art(p.k,p.pal);
+
+/* placeholder art: tiny inline SVG, no image weight */
+function art(k,[bg,a,b,c],meet){
+  const R=(x,y,w,h,f,rx=0)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="${f}"/>`;
+  const C=(x,y,r,f)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}"/>`;
+  let s=R(0,0,100,100,bg);
+  if(k==='event'){
+    s+=C(50,64,36,a)+C(50,64,25,c)+C(50,64,13,b);
+    for(let i=0;i<5;i++) s+=C(18+16*i,14,5,b);
+  }else if(k==='report'){
+    [30,52,40,68,48,60].forEach((h,i)=>{s+=R(16+11.5*i,86-h,8,h,i%2?c:a)});
+    s+=C(66,26,13,b)+R(14,86,72,1.5,b);
+  }else if(k==='dispatch'){
+    s+=R(14,12,72,14,b);
+    for(let col=0;col<3;col++){
+      for(let r=0;r<6;r++) s+=R(14+25.5*col,36+8.5*r,21,3,a);
+    }
+    s+=R(39.5,36,21,20,c);
+  }else if(k==='landing'){
+    s+=R(14,10,72,80,b,3)+R(14,10,72,9,a,3)+C(20,14.5,1.8,c)+C(25,14.5,1.8,c)+C(30,14.5,1.8,c)
+      +R(20,26,60,22,a,2)+R(20,54,22,7,c,3)+R(20,68,17,16,a,2)+R(41.5,68,17,16,a,2)+R(63,68,17,16,a,2);
+  }else if(k==='ads'){
+    s+=C(31,31,17,a)+R(52,14,34,34,c)+`<polygon points="14,86 31,52 48,86" fill="${b}"/>`
+      +`<path d="M52 86 A17 17 0 0 1 86 86 Z" fill="${a}"/>`;
+  }else if(k==='email'){
+    s+=R(14,26,72,46,b,3)+`<polygon points="14,26 86,26 50,54" fill="${c}"/>`+R(24,80,52,4,a,2)+R(34,88,32,3,a,1.5);
+  }else if(k==='chat'){
+    s+=R(14,16,50,14,a,7)+R(36,36,50,14,c,7)+R(14,56,38,14,a,7)+R(14,80,72,10,b,5);
+  }else if(k==='flow'){
+    const L=(d,col,w)=>`<path d="${d}" fill="none" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;
+    s+=L('M16 28H84',b,1.5)+L('M50 28C50 12 67 12 67 28',b,1.5);
+    [16,33,50,67,84].forEach(x=>{s+=C(x,28,4.5,b)});
+    s+=L('M10 50H90',b,.8)+L('M24 72H76',c,2.5);
+    [24,50,76].forEach(x=>{s+=C(x,72,7,c)});
+    s+=R(14,86,72,5,a,2.5);
+  }else{ /* social */
+    for(let r=0;r<3;r++)for(let q=0;q<3;q++){
+      const f=[a,b,c][(r+q)%3],x=22+28*q,y=22+28*r;
+      s+=(r*3+q)%2?R(x-10,y-10,20,20,f,3):C(x,y,10,f);
+    }
+  }
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid ${meet?'meet':'slice'}" aria-hidden="true">${s}</svg>`;
+}
+
+const $=s=>document.querySelector(s);
+const collage=$('#collage'),list=$('#list'),bar=$('#bar'),proj=$('#project');
+const num=i=>String(i+1).padStart(2,'0');
+
+/* filler windows: not linked to anything, only here to test the grid with other proportions */
+const FILL=[];
+collage.innerHTML='<i class="glow g2"></i><i class="glow g1"></i>'+W.map((p,i)=>`<a class="card${p.fit?' wide':''}" href="#${p.s}" aria-label="${p.t}" style="--ar:${p.har||'1/1'}"><div class="win"><div class="art">${vis(p)}</div><div class="tb"><span class="ttl">${num(i)} ${p.sh}</span><span class="cta">Open →</span></div></div></a>`).join('')+FILL.map((ar,j)=>`<div class="card fill" aria-hidden="true" style="--ar:${ar}"><div class="win"><div class="art"></div><div class="tb"><span class="ttl">${num(W.length+j)} coming soon</span></div></div></div>`).join('');
+list.innerHTML=W.map((p,i)=>`<a class="row" href="#${p.s}"><span class="th">${vis(p)}</span><span class="tt">${p.t}</span><span class="tg">${num(i)} · ${p.tags.join(' · ')}</span><span class="go">→</span></a>`).join('');
+const cards=[...collage.querySelectorAll('.card')],rows=[...list.children];
+
+/* systems chapter */
+const step=(t,r,c)=>`<li><span class="s">${t}</span><em class="role ${c}">${r}</em></li>`;
+const lanesHTML=()=>`<div class="cmp">
+  <section class="lane"><h3 class="lh">Before</h3><p class="lsub">3 handoffs outside the team</p><ol class="steps">${step('Fix needed','Team','')+step('Brief to agency','Handoff','out')+step('Mockup','Agency','out')+step('Approval rounds','Back and forth','out')+step('Live','Agency','out')}</ol></section>
+  <section class="lane now"><h3 class="lh">Now</h3><p class="lsub">0 handoffs outside the team</p><ol class="steps">${step('Need','Team','')+step('Claude project + brand rules','Skills','sys')+step('Page or new module','HubSpot','sys')+step('Live','Team','')}</ol></section>
+</div>
+<ul class="legend"><li><i class="role"></i>In the team</li><li><i class="role out"></i>Outside the team</li><li><i class="role sys"></i>The system</li></ul>`;
+const BUILD=[
+  ['Brand systems AI can read','Design systems written as tokens and plain rules, so Claude applies color, type and layout the same way a designer would.',['Design tokens','Brand books','Global CSS'],'doc'],
+  ['Production systems','Reusable CMS modules, blog and email systems, and multilingual templates built on the brand, so new pages start from parts that already work.',['HubSpot CMS','Email HTML','i18n'],'gen'],
+  ['Claude skills for the team','Guided workflows that produce event pages, newsletters, customer stories and image prompts. Colleagues without code run them themselves.',['Claude skills','Projects','Figma MCP'],'loop'],
+  ['Automation and tooling','Scripts and dashboards for the jobs nobody should do by hand: redirect audits, page preview screenshots, content monitoring.',['Python','APIs','Slack'],'tool']
+];
+function mini(k){
+  const g='currentColor',o='#ff5b2e';
+  const n=(x,y,r,f)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${f}"/>`;
+  const l=(d,c)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const rc=(x,y,w,h,f,st)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}"${st?` stroke="${st}" stroke-width="2"`:''}/>`;
+  let s='';
+  if(k==='loop') s=l('M8 26H40',g)+l('M24 26C24 8 40 8 40 26',g)+n(8,26,4,g)+n(24,26,4,g)+n(40,26,4,g)+l('M56 20H72',g)+l('M84 26H112',o)+n(84,26,5,o)+n(112,26,5,o);
+  else if(k==='doc') s=rc(6,6,22,28,'none',g)+l('M12 14H22M12 20H22M12 26H18',g)+l('M38 20H54',g)+n(70,20,10,o)+l('M86 20H96',g)+rc(100,8,14,24,'none',g);
+  else if(k==='gen') s=l('M6 10H26M6 20H26M6 30H26',g)+l('M34 20H48',g)+rc(54,8,24,24,o)+l('M84 20H96',g)+rc(100,6,16,28,'none',g);
+  else s=rc(44,8,32,24,o)+n(14,10,4,g)+n(14,30,4,g)+n(106,10,4,g)+n(106,30,4,g)+l('M18 12L44 18M18 28L44 22M102 12L76 18M102 28L76 22',g);
+  return `<svg class="mini" viewBox="0 0 120 40" aria-hidden="true">${s}</svg>`;
+}
+$('#sysflow').innerHTML=lanesHTML()+`<p class="more"><a class="lnk" href="#${SY[0].s}">Read the case study →</a></p>`;
+$('#build').innerHTML=BUILD.map(([t,d,c,k])=>`<li>${mini(k)}<b>${t}</b><p>${d}</p><div class="chips">${c.map(x=>`<span>${x}</span>`).join('')}</div></li>`).join('');
+$('#cases').innerHTML=SY.map((p,i)=>`<a class="row" href="#${p.s}"><span class="th">${vis(p)}</span><span class="tt">${p.t}</span><span class="tg">${num(i)} · ${p.tags.slice(0,3).join(' · ')}<br>${p.sum}</span><span class="go">→</span></a>`).join('')
+  +`<div class="row soft"><span class="th"></span><span class="tt">More systems</span><span class="tg">Available in conversation.</span><span class="go"></span></div>`;
+
+/* board engine.
+   MODE 'grid'  : a centred, non-overlapping grid; the hovered card grows, the others shrink with their distance from the pointer.
+   MODE 'drift' : floating windows that bounce around the stage. */
+const MODE='grid';
+document.body.classList.toggle('gridmode',MODE==='grid');
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const AR=[...W.map(p=>p.har||'1/1'),...FILL].map(s=>{const [a,b]=s.split('/').map(Number);return a/b});
+const M=[],GW=cards.map(()=>({w:1,v:0})),L=[];
+let stageW=0,stageH=0;
+const ptr={x:0,y:0,in:false};
+
+function layoutGrid(){
+  if(!stageW)return;
+  const mob=stageW<700,rows=mob?[[0,1],[2],[3,4],[5,6]]:[[0,1,2],[3,4,5,6]];
+  const gap=mob?8:16,bar=40,Hmax=stageH*(mob?.94:.93);
+  let Wg=Math.min(stageW*(mob?.94:.8),1100),res;
+  const run=Wg=>{
+    const rm=rows.map(r=>r.reduce((s,i)=>s+GW[i].w,0)/r.length),mx=Math.max(...rm);
+    const out=[];let y=0;
+    rows.forEach((r,ri)=>{
+      const Wr=Wg*Math.max(.62,rm[ri]/mx),avail=Wr-gap*(r.length-1),S=r.reduce((s,i)=>s+AR[i]*GW[i].w,0);
+      const items=r.map(i=>{const w=avail*AR[i]*GW[i].w/S;return {i,w,h:w/AR[i]+bar}});
+      const rh=Math.max(...items.map(o=>o.h)),rw=items.reduce((s,o)=>s+o.w,0)+gap*(r.length-1);
+      let x=(stageW-rw)/2;
+      items.forEach(o=>{out[o.i]={x,y:y+(rh-o.h)/2,w:o.w,h:o.h};x+=o.w+gap});
+      y+=rh+gap;
+    });
+    return {out,H:y-gap};
+  };
+  for(let k=0;k<3;k++){res=run(Wg);if(res.H<=Hmax)break;Wg*=Hmax/res.H*.99}
+  const top=(stageH-res.H)/2;
+  cards.forEach((c,i)=>{
+    const o=res.out[i];L[i]={x:o.x,y:o.y+top,w:o.w,h:o.h};
+    c.style.width=o.w+'px';c.classList.toggle('sm',o.w<175);
+    c.style.transform=`translate3d(${o.x}px,${o.y+top}px,0)`;
+  });
+}
+
+function measure(){
+  if($('#v-home').hidden)return;
+  const hd=$('header').offsetHeight,bh=bar.hidden?0:bar.offsetHeight;
+  stageW=collage.clientWidth;stageH=Math.max(320,innerHeight-hd-bh);
+  collage.style.height=stageH+'px';
+  if(MODE==='grid'){cards.forEach((c,i)=>c.style.setProperty('--n',i));layoutGrid();return}
+  cards.forEach((c,i)=>{
+    c.style.width='';
+    const w=c.offsetWidth,h=c.offsetHeight,mx=Math.max(0,stageW-w),my=Math.max(0,stageH-h);
+    let m=M[i];
+    if(!m){
+      const g=(i*0.618034+.12)%1,g2=(i*0.381966*3+.31)%1,ang=(i*2.4+.7)%(Math.PI*2),sp=(still?0:14.4+(i%4)*4.2);
+      const N=cards.length,k=(i*3)%N,cs=stageW>700?4:2,rs=Math.ceil(N/cs);
+      m=M[i]={x:Math.max(0,Math.min(mx,((k%cs)+.5)/cs*stageW-w/2+(g-.5)*40)),y:Math.max(0,Math.min(my,(Math.floor(k/cs)+.5)/rs*stageH-h/2+(g2-.5)*40)),vx:Math.cos(ang)*sp,vy:Math.sin(ang)*sp,p:false};
+      c.addEventListener('mouseenter',()=>m.p=true);c.addEventListener('mouseleave',()=>m.p=false);
+      c.addEventListener('focusin',()=>m.p=true);c.addEventListener('focusout',()=>m.p=false);
+    }
+    m.w=w;m.h=h;m.mx=mx;m.my=my;m.x=Math.min(m.x,mx);m.y=Math.min(m.y,my);
+    c.style.transform=`translate3d(${m.x}px,${m.y}px,0)`;
+  });
+  [...M.keys()].sort((a,b)=>M[a].x-M[b].x).forEach((k,r)=>cards[k].style.setProperty('--n',r));
+}
+
+/* orange glow: springs toward the pointer, stretches with its own speed, overshoots when the pointer stops */
+const B=[...collage.querySelectorAll('.glow')].map((el,i)=>({el,x:0,y:0,vx:0,vy:0,k:i?26:85,c:i?5:7.5,init:false}));
+function pt(e){const r=collage.getBoundingClientRect();ptr.x=e.clientX-r.left;ptr.y=e.clientY-r.top;ptr.in=ptr.y>=0&&ptr.y<=r.height}
+addEventListener('pointermove',pt);
+addEventListener('pointerdown',pt);
+addEventListener('pointerup',e=>{if(e.pointerType==='touch')ptr.in=false});
+document.documentElement.addEventListener('mouseleave',()=>ptr.in=false);
+
+let last=performance.now();
+function tick(t){
+  const dt=Math.min(.04,(t-last)/1000),ts=t/1000;last=t;
+  if(view==='home'&&!document.hidden&&stageW){
+    /* glow */
+    const tx=ptr.in?ptr.x:stageW/2+Math.sin(ts*.27)*stageW*.28,ty=ptr.in?ptr.y:stageH/2+Math.cos(ts*.21)*stageH*.25;
+    B.forEach((b,i)=>{
+      if(!b.init){b.x=tx;b.y=ty;b.init=true}
+      if(still){b.x=stageW/2;b.y=stageH/2;b.el.style.transform=`translate3d(${b.x}px,${b.y}px,0)`;return}
+      b.vx+=(b.k*(tx-b.x)-b.c*b.vx)*dt;b.vy+=(b.k*(ty-b.y)-b.c*b.vy)*dt;
+      b.x+=b.vx*dt;b.y+=b.vy*dt;
+      const sp=Math.hypot(b.vx,b.vy),s=Math.min(sp/2200,.5),a=Math.atan2(b.vy,b.vx),br=1+.04*Math.sin(ts*1.3+i*2);
+      b.el.style.transform=`translate3d(${b.x}px,${b.y}px,0) rotate(${a}rad) scale(${(1+s)*br},${(1-s*.5)*br})`;
+    });
+    /* cards */
+    if(MODE==='grid'){
+      cards.forEach((c,i)=>{
+        const l=L[i];if(!l)return;
+        let f=0;
+        if(ptr.in){
+          const inside=ptr.x>=l.x&&ptr.x<=l.x+l.w&&ptr.y>=l.y&&ptr.y<=l.y+l.h;
+          const d=Math.hypot(ptr.x-(l.x+l.w/2),ptr.y-(l.y+l.h/2)),sg=stageW*.2;
+          f=inside?1:Math.exp(-(d/sg)*(d/sg))*.85;
+        }
+        const g=GW[i],tw=ptr.in?.4+2.6*f:1;
+        if(still){g.w=tw}else{g.v+=(110*(tw-g.w)-13*g.v)*dt;g.w+=g.v*dt}
+      });
+      layoutGrid();
+    }else if(!still){
+      M.forEach((m,i)=>{
+        if(m.p)return;
+        m.x+=m.vx*dt;m.y+=m.vy*dt;
+        if(m.x<0){m.x=0;m.vx=Math.abs(m.vx)}else if(m.x>m.mx){m.x=m.mx;m.vx=-Math.abs(m.vx)}
+        if(m.y<0){m.y=0;m.vy=Math.abs(m.vy)}else if(m.y>m.my){m.y=m.my;m.vy=-Math.abs(m.vy)}
+        cards[i].style.transform=`translate3d(${m.x}px,${m.y}px,0)`;
+      });
+    }
+  }
+  requestAnimationFrame(tick);
+}
+addEventListener('resize',measure);
+requestAnimationFrame(tick);
+
+let active=null,view='home',cur=null;
+
+function applyFilter(){
+  const hit=p=>!active||p.tags.includes(active);
+  W.forEach((p,i)=>{
+    const m=hit(p);
+    cards[i].classList.toggle('off',!m);
+    cards[i].classList.toggle('on',!!active&&m);
+    cards[i].toggleAttribute('inert',!m);
+    rows[i].hidden=!m;
+  });
+  cards.slice(W.length).forEach(c=>{c.classList.toggle('off',!!active);c.toggleAttribute('inert',!!active)});
+}
+
+function renderBar(){
+  if(view==='profile'||view==='systems'||(view==='project'&&cur.ch==='systems')){bar.hidden=true;return}
+  bar.hidden=false;
+  if(view==='project'){
+    bar.innerHTML=cur.tags.map(t=>`<button class="tag" data-t="${t}">${t}</button>`).join('');
+  }else{
+    bar.innerHTML=`<button class="tag" data-t="" aria-pressed="${!active}">All<sup>${W.length}</sup></button>`
+      +TAGS.map(t=>`<button class="tag" data-t="${t}" aria-pressed="${active===t}">${t}<sup>${count(t)}</sup></button>`).join('');
+  }
+}
+bar.addEventListener('click',e=>{
+  const b=e.target.closest('.tag');if(!b)return;
+  const t=b.dataset.t;
+  if(view==='project'){active=t;location.hash='home';return}
+  active=(t&&active!==t)?t:null;
+  applyFilter();renderBar();
+});
+
+const flowHTML=()=>lanesHTML()+`
+<aside class="key"><span>Key step</span><p>The <b>brand book</b>. Written so Claude can read it and translate it into <u>visual assets that stay consistent</u>.</p></aside>
+<div class="res"><div><b>—</b><span>time per fix, before and now</span></div><div><b>—</b><span>approval rounds</span></div><div><b>—</b><span>people who can ship a page</span></div></div>
+<p class="rnote">Result figures to add.</p>`;
+
+/* each element keeps its own shape; tall ones step in from alternating sides on small screens */
+const items=p=>p.slots.map(([l,k,ar,c,n],j)=>{
+  const [a,b]=ar.split('/').map(Number),tall=a/b<1.1;
+  const st=`--ar:${ar};--c:${c}`+(tall?`;--mw:72%;--js:${j%2?'end':'start'}`:'');
+  return `<figure class="item" style="${st}"><div class="ph" style="background:${p.pal[0]}">${art(k,p.pal,true)}</div><figcaption><b>${l}</b>${n}</figcaption></figure>`;
+}).join('');
+function renderProject(p){
+  const L=p.ch==='systems'?SY:W,i=L.indexOf(p);
+  const pr=L[(i+L.length-1)%L.length],nx=L[(i+1)%L.length];
+  const nav=L.length>1?`<a href="#${pr.s}">← ${pr.t}</a><a href="#${nx.s}">${nx.t} →</a>`:`<a href="#systems">← Systems</a><span></span>`;
+  proj.innerHTML=`<div class="stage"><div class="hero" style="--har:${p.har||'4/5'};--hw:${p.hw||380}px">${vis(p)}</div></div>
+    <h1 class="ptitle">${p.t}</h1>
+    ${p.role?`<p class="pmeta">${p.role} · ${p.year}</p>`:''}
+    <p class="pdesc">${p.d}</p>
+    ${p.link?`<p class="plink"><a class="lnk" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel} ↗</a></p>`:''}
+    ${p.flow?flowHTML():''}
+    ${p.facts?`<ul class="facts">${p.facts.map(([n,l])=>`<li><b>${n}</b><span>${l}</span></li>`).join('')}</ul>`:''}
+    <div class="flowgrid">${items(p)}</div>
+    <p class="rnote">Shapes mark where the real material goes.</p>
+    <nav class="pn">${nav}</nav>`;
+}
+
+function route(){
+  const h=decodeURIComponent(location.hash.slice(1));
+  const p=P.find(x=>x.s===h);
+  view=p?'project':h==='list'?'index':h==='profile'?'profile':h==='systems'?'systems':'home';
+  cur=p||null;
+  const paint=()=>{
+    document.body.dataset.view=view;
+    $('#v-home').hidden=view!=='home';
+    $('#v-index').hidden=view!=='index';
+    $('#v-systems').hidden=view!=='systems';
+    $('#v-profile').hidden=view!=='profile';
+    proj.hidden=view!=='project';
+    const sys=view==='systems'||(view==='project'&&cur.ch==='systems');
+    $('#mW').toggleAttribute('aria-current',!sys&&view!=='profile');
+    $('#mS').toggleAttribute('aria-current',sys);
+    $('#mP').toggleAttribute('aria-current',view==='profile');
+    const Rr=$('#navR');
+    if(view==='index'){Rr.textContent='Board';Rr.href='#home'}else{Rr.textContent='List';Rr.href='#list'}
+    if(cur)renderProject(cur);
+    applyFilter();renderBar();measure();
+    window.scrollTo(0,0);
+  };
+  if(document.startViewTransition&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.startViewTransition(paint);
+  else paint();
+}
+addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
